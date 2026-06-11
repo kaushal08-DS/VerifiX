@@ -26,8 +26,18 @@ uploaded_file = st.file_uploader(
 
 if uploaded_file:
 
+    if len(uploaded_file) > 50000:
+        st.warning(
+            "⚠️ Large dataset detected. Analysis may take 1-3 minutes depending on file size."
+        )
+
     # Read CSV
     df = pd.read_csv(uploaded_file)
+
+    if len(df) > 50000:
+        st.warning(
+            "⚠️ Large dataset detected. Analysis may take 1-3 minutes depending on file size."
+        )
 
     st.write(f"Processing {len(df)} rows...")
 
