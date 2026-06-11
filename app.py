@@ -29,6 +29,8 @@ if uploaded_file:
     # Read CSV
     df = pd.read_csv(uploaded_file)
 
+    st.write(f"Processing {len(df)} rows...")
+
     st.subheader("Uploaded Data")
     st.dataframe(df.head())
 
@@ -51,14 +53,18 @@ if uploaded_file:
         )
         st.stop()
 
-    # Scale features
-    X = scaler.transform(df)
+    with st.spinner("🔍 Analyzing transactions... Please wait."):
 
-    # Predictions
-    predictions = model.predict(X)
+        # Scale features
+        X = scaler.transform(df)
 
-    # Probabilities
-    probabilities = model.predict_proba(X)
+        # Predictions
+        predictions = model.predict(X)
+
+        # Probabilities
+        probabilities = model.predict_proba(X)
+
+    st.success("✅ Analysis Complete!")
 
     # Add results to dataframe
     results_df = df.copy()
