@@ -8,7 +8,67 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title("💳 Fraud Detection System")
+with st.sidebar:
+
+    st.image(
+        "https://cdn-icons-png.flaticon.com/512/2092/2092063.png",
+        width=100
+    )
+
+    st.title("VerifiX")
+
+    st.markdown("""
+    ### Features
+
+    ✅ Fraud Detection
+
+    ✅ Fraud Probability
+
+    ✅ CSV Upload
+
+    ✅ Download Results
+
+    ✅ Analytics Dashboard
+    """)
+
+st.markdown("""
+<style>
+
+.stApp {
+    background-color: #0E1117;
+    color: white;
+}
+
+h1 {
+    text-align: center;
+    color: #00E5FF;
+}
+
+[data-testid="stMetric"] {
+    background-color: #1E222A;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #00E5FF;
+}
+
+div[data-testid="stFileUploader"] {
+    background-color: #1E222A;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+<h1 style='text-align:center; color:#00E5FF;'>
+💳 VerifiX - Fraud Detection System
+</h1>
+
+<h4 style='text-align:center; color:gray;'>
+AI-Powered Fraud Detection using Random Forest & Machine Learning
+</h4>
+""", unsafe_allow_html=True)
 
 st.markdown("""
             This application uses a Random Forest model trained on credit card transactions
@@ -84,39 +144,25 @@ if uploaded_file:
 
     # Metrics
     fraud_count = (predictions == 1).sum()
-
-    col1, col2 = st.columns(2)
-
+    col1, col2, col3 = st.columns(3)
+    
     with col1:
         st.metric(
-            "Total Transactions",
+            "Transactions",
             len(results_df)
         )
 
     with col2:
         st.metric(
-            "Fraud Transactions Detected",
+            "Frauds Detected",
             fraud_count
         )
 
-    st.subheader("Fraud Distribution")
-    
-    fig, ax = plt.subplots(figsize=(4, 3))
-
-    results_df["Prediction"].map(
-        {0: "Normal", 1: "Fraud"}
-    ).value_counts().plot(
-        kind="bar",
-        ax=ax
-    )
-    
-    ax.set_xlabel("Transaction Type")
-    ax.set_ylabel("Count")
-
-    col1, col2, col3 = st.columns([1, 2, 1])
-    
-    with col2:
-        st.pyplot(fig)
+    with col3:
+        st.metric(
+            "Fraud Rate",
+            f"{(fraud_count/len(results_df))*100:.2f}%"
+        )
 
     # Results table
     st.subheader("Prediction Results")
