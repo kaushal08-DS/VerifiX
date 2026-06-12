@@ -26,11 +26,6 @@ uploaded_file = st.file_uploader(
 
 if uploaded_file:
 
-    if len(uploaded_file) > 50000:
-        st.warning(
-            "⚠️ Large dataset detected. Analysis may take 1-3 minutes depending on file size."
-        )
-
     # Read CSV
     df = pd.read_csv(uploaded_file)
 
@@ -82,6 +77,11 @@ if uploaded_file:
     results_df["Prediction"] = predictions
     results_df["Fraud_Probability"] = probabilities[:, 1]
 
+    results_df = results_df.sort_values(
+        by="Fraud_Probability",
+        ascending=False
+    )
+
     # Metrics
     fraud_count = (predictions == 1).sum()
 
@@ -103,10 +103,15 @@ if uploaded_file:
     
     fig, ax = plt.subplots(figsize=(4, 3))
 
-    results_df["Prediction"].value_counts().plot(
+    results_df["Prediction"].map(
+        {0: "Normal", 1: "Fraud"}
+    ).value_counts().plot(
         kind="bar",
         ax=ax
     )
+    
+    ax.set_xlabel("Transaction Type")
+    ax.set_ylabel("Count")
 
     col1, col2, col3 = st.columns([1, 2, 1])
     
@@ -117,7 +122,9 @@ if uploaded_file:
     st.subheader("Prediction Results")
 
     st.dataframe(
-        results_df.head(20)
+        results_df[
+            ["Prediction", "Fraud_Probability"]
+        ].head(20)
     )
 
     # Show only frauds
@@ -139,11 +146,6 @@ if uploaded_file:
         data=csv,
         file_name="fraud_detection_results.csv",
         mime="text/csv"
-    )
-
-    results_df = results_df.sort_values(
-        by="Fraud_Probability",
-        ascending=False
     )
 
     st.dataframe(
