@@ -76,6 +76,10 @@ st.markdown("""
             to identify potentially fraudulent transactions and estimate fraud probability.
             """)
 
+st.markdown("""
+            For best performance use less than 20,000 rows or wait 30 seconds for larger datasets.
+            """)
+
 # Load model and scaler
 model = joblib.load("model/fraud_model.pkl")
 scaler = joblib.load("model/scaler.pkl")
