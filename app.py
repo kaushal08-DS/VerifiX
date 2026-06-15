@@ -80,6 +80,14 @@ st.markdown("""
 model = joblib.load("model/fraud_model.pkl")
 scaler = joblib.load("model/scaler.pkl")
 
+# Cache predictions
+@st.cache_data
+def process_data(df):
+    X = scaler.transform(df)
+    predictions = model.predict(X)
+    probabilities = model.predict_proba(X)
+    return predictions, probabilities
+
 uploaded_file = st.file_uploader(
     "Upload Transaction CSV",
     type=["csv"]
