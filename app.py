@@ -87,9 +87,7 @@ scaler = joblib.load("model/scaler.pkl")
 # Cache predictions
 @st.cache_data
 def process_data(df):
-    X = scaler.transform(df)
-    predictions = model.predict(X)
-    probabilities = model.predict_proba(X)
+    predictions, probabilities = process_data(df)
     return predictions, probabilities
 
 uploaded_file = st.file_uploader(
@@ -101,6 +99,12 @@ if uploaded_file:
 
     # Read CSV
     df = pd.read_csv(uploaded_file)
+
+    if len(df) > 50000:
+        st.warning(
+            "Large dataset detected. Processing first 50,000 rows."
+        )
+        df = df.head(50000)
 
     if len(df) > 50000:
         st.warning(
